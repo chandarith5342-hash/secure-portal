@@ -1,6 +1,7 @@
 <?php
 require 'header.php';
-require 'pdo.php';
+require_once 'pdo.php';
+require 'mailer.php';
 
 $error   = '';
 $success = '';
@@ -28,9 +29,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = 'Username or email is already taken.';
         } else {
             $hash = password_hash($password, PASSWORD_DEFAULT);
-            $ins  = $pdo->prepare('INSERT INTO users (username, email, password) VALUES (?, ?, ?)');
-            $ins->execute(array($username, $email, $hash));
-            $success = 'Account created! You can now <a href="login.php">sign in</a>.';
+            $token = bin2hex(random_bytes(32));
+            
+            $ins  = $pdo->prepare('INSERT INTO users (username, email, password, verification_token) VALUES (?, ?, ?, ?)');
+            $ins->execute(array($username, $email, $hash, $token));
+            
+      
+            $verifyLink = "http://" . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . "/verify.php?token=$token";
+            $subject = "Verify your SecurePortal account";
+            $msg = "<h1>Welcome to SecurePortal!</h1><p>Please click the link below to verify your account:</p><p><a href='$verifyLink'>$verifyLink</a></p>";
+            
+            sendMail($email, $subject, $msg);
+            
+            $success = 'Account created! Please check your email to verify your account before signing in.';
         }
     }
 }
@@ -40,7 +51,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <h1 class="auth-title">Create account</h1>
         <p class="auth-sub">Join SecurePortal today</p>
         <?php if ($error):   ?><div class="alert alert-error"><?php echo htmlspecialchars($error); ?></div><?php endif; ?>
-        <?php if ($success): ?><div class="alert alert-success"><?php echo $success; ?></div><?php endif; ?>
+        <?php if ($success): ?>
+            <div class="alert alert-success"><?php echo $success; ?></div>
+            <?php if (!empty($_SESSION['_dev_mail_link'])): ?>
+            <div class="alert" style="background:rgba(108,99,255,.12);border-color:#6c63ff;color:#a78bfa;margin-top:.5rem">
+                <strong>&#128274; Email not delivered?</strong> Click your verification link directly:<br>
+                <a href="<?php echo htmlspecialchars($_SESSION['_dev_mail_link']); ?>" style="color:#6c63ff;word-break:break-all">
+                    <?php echo htmlspecialchars($_SESSION['_dev_mail_link']); ?>
+                </a>
+            </div>
+            <?php unset($_SESSION['_dev_mail_link'], $_SESSION['_dev_mail_subj']); ?>
+            <?php endif; ?>
+        <?php endif; ?>
         <form method="POST" action="register.php">
             <div class="form-group">
                 <label for="username">Username</label>

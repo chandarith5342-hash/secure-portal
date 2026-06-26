@@ -1,6 +1,6 @@
-// script.js — ES6+ interactivity
 
-/* ── Hamburger Menu ────────────────────────────────────────────── */
+
+
 const hamburger = document.getElementById('hamburger');
 const navLinks  = document.getElementById('navLinks');
 
@@ -11,7 +11,7 @@ if (hamburger && navLinks) {
   });
 }
 
-/* ── Show/Hide Password ────────────────────────────────────────── */
+
 document.querySelectorAll('.toggle-pw').forEach(btn => {
   btn.addEventListener('click', () => {
     const targetId = btn.dataset.target;
@@ -24,7 +24,7 @@ document.querySelectorAll('.toggle-pw').forEach(btn => {
   });
 });
 
-/* ── Password Strength Meter ───────────────────────────────────── */
+
 const pwInput      = document.getElementById('password');
 const strengthFill = document.getElementById('strengthFill');
 const strengthLabel = document.getElementById('strengthLabel');
@@ -55,7 +55,7 @@ if (pwInput && strengthFill && strengthLabel) {
   });
 }
 
-/* ── Scroll-reveal Feature Cards ──────────────────────────────── */
+
 const revealCards = document.querySelectorAll('[data-reveal]');
 
 if ('IntersectionObserver' in window && revealCards.length) {
@@ -70,11 +70,10 @@ if ('IntersectionObserver' in window && revealCards.length) {
 
   revealCards.forEach(card => observer.observe(card));
 } else {
-  // Fallback: show all immediately
+
   revealCards.forEach(card => card.classList.add('revealed'));
 }
 
-/* ── Live Clock on Dashboard ───────────────────────────────────── */
 const clockEl = document.getElementById('serverTime');
 if (clockEl) {
   setInterval(() => {

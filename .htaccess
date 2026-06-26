@@ -1,0 +1,24 @@
+# ─── SecurePortal – InfinityFree compatible .htaccess ───────────────
+
+# Enable PHP error display during development (remove in production)
+php_flag display_errors off
+php_value error_reporting 0
+
+# Default index
+DirectoryIndex index.php index.html
+
+# Block direct access to sensitive files
+<FilesMatch "^(pdo|mailer|mail_log)\.php?$|mail_log\.txt$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Security headers
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+</IfModule>
+
+# Disable directory listing
+Options -Indexes

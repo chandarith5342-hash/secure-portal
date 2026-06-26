@@ -13,6 +13,8 @@
   username   VARCHAR(50)  NOT NULL UNIQUE,
   email      VARCHAR(100) NOT NULL UNIQUE,
   password   VARCHAR(255) NOT NULL,
+  role       ENUM('user','admin') DEFAULT 'user',
+  is_verified TINYINT(1)  DEFAULT 0,
   created_at TIMESTAMP DEFAULT NOW()
 );</code></pre>
         </article>

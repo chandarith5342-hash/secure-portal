@@ -6,7 +6,7 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-require 'pdo.php';
+require_once 'pdo.php';
 $pdo  = getDB();
 $stmt = $pdo->prepare('SELECT username, email, created_at FROM users WHERE id = ?');
 $stmt->execute(array($_SESSION['user_id']));
